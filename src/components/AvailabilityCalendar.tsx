@@ -1,14 +1,9 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { format, startOfWeek, addDays, addHours, setHours, isSameHour, isSameDay, addWeeks, subWeeks } from 'date-fns'
+import { format, startOfWeek, addDays, addHours, setHours, addWeeks } from 'date-fns'
 import { toZonedTime, formatInTimeZone } from 'date-fns-tz'
 import html2canvas from 'html2canvas'
-
-interface TimeSlot {
-  start: Date
-  end: Date
-}
 
 interface SelectedSlot {
   day: number
@@ -132,7 +127,7 @@ export default function AvailabilityCalendar() {
       const newSlots: SelectedSlot[] = []
       for (let d = minDay; d <= maxDay; d++) {
         for (let h = minHour; h <= maxHour; h++) {
-          for (let m of MINUTES) {
+          for (const m of MINUTES) {
             if ((h === minHour && m >= minMinute) || (h === maxHour && m <= maxMinute) || (h > minHour && h < maxHour)) {
               newSlots.push({ day: d, hour: h, minute: m })
             }
