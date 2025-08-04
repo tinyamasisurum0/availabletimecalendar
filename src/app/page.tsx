@@ -8,7 +8,7 @@ export default function Home() {
           Available Time Calendar
         </h1>
         <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto text-lg leading-relaxed">
-          Select your available times and generate a shareable calendar image for your target timezone
+          Select your available times and generate a shareable calendar image for your target timezone!
         </p>
         <AvailabilityCalendar />
       </div>
