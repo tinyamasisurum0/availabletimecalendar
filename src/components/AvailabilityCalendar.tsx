@@ -178,31 +178,9 @@ export default function AvailabilityCalendar() {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="mb-8 flex flex-col sm:flex-row gap-6 items-center justify-between bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
-        <div className="flex items-center gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Your Timezone
-            </label>
-            <div className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg text-sm font-semibold shadow-md">
-              {userTimezone}
-            </div>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Target Timezone
-            </label>
-            <select
-              value={targetTimezone}
-              onChange={(e) => setTargetTimezone(e.target.value)}
-              className="px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-lg text-gray-900 font-medium min-w-[240px] cursor-pointer hover:border-blue-300 transition-all duration-200 hover:shadow-xl"
-            >
-              {TIMEZONE_OPTIONS.map(tz => (
-                <option key={tz.value} value={tz.value} className="py-2">{tz.label}</option>
-              ))}
-            </select>
-          </div>
-          <div className="flex items-center gap-3">
+      <div className="mb-8 grid grid-cols-1 lg:grid-cols-3 gap-6 items-center bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-center gap-3">
             <span className="text-sm font-medium text-gray-700">12h</span>
             <button
               onClick={() => setIs24HourFormat(!is24HourFormat)}
@@ -218,9 +196,10 @@ export default function AvailabilityCalendar() {
             </button>
             <span className="text-sm font-medium text-gray-700">24h</span>
           </div>
-          <div className="flex items-center gap-4">
+          
+          <div className="flex flex-col items-center gap-2">
             <span className="text-sm font-medium text-gray-700">Interval:</span>
-            <div className="flex gap-4">
+            <div className="flex gap-3">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="radio"
@@ -257,23 +236,23 @@ export default function AvailabilityCalendar() {
             </div>
           </div>
         </div>
-        <button
-          onClick={exportAsJPEG}
-          disabled={selectedSlots.length === 0}
-          className="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
-        >
-          Export as JPEG
-        </button>
-      </div>
-
-      <div 
-        ref={calendarRef}
-        className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-4 border border-white/20"
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-      >
-        <div className="mb-6 text-center">
-          <div className="flex items-center justify-center gap-4 mb-4">
+        
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-full">
+            <label className="block text-sm font-medium text-gray-700 mb-2 text-center">
+              Target Timezone
+            </label>
+            <select
+              value={targetTimezone}
+              onChange={(e) => setTargetTimezone(e.target.value)}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-lg text-gray-900 font-medium cursor-pointer hover:border-blue-300 transition-all duration-200 hover:shadow-xl"
+            >
+              {TIMEZONE_OPTIONS.map(tz => (
+                <option key={tz.value} value={tz.value} className="py-2">{tz.label}</option>
+              ))}
+            </select>
+          </div>
+          <div className="flex items-center gap-4">
             <button
               onClick={() => setCurrentWeekOffset(Math.max(0, currentWeekOffset - 1))}
               disabled={currentWeekOffset <= 0}
@@ -289,15 +268,14 @@ export default function AvailabilityCalendar() {
               </svg>
             </button>
             <div className="text-center">
-              <h2 className="text-xl font-bold bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent">
-                Availability for {TIMEZONE_OPTIONS.find(tz => tz.value === targetTimezone)?.label || targetTimezone}
-              </h2>
-              <p className="text-sm text-gray-500 mt-1">
-                {format(weekDays[0], 'MMM d')} - {format(weekDays[6], 'MMM d, yyyy')}
-                {currentWeekOffset === 0 && ' (This Week)'}
-                {currentWeekOffset === 1 && ' (Next Week)'}
-                {currentWeekOffset > 1 && ` (${currentWeekOffset} weeks ahead)`}
-              </p>
+              <div className="text-sm font-medium text-gray-700">
+                {format(weekDays[0], 'MMM d')} - {format(weekDays[6], 'MMM d')}
+              </div>
+              <div className="text-xs text-gray-500">
+                {currentWeekOffset === 0 && 'This Week'}
+                {currentWeekOffset === 1 && 'Next Week'}
+                {currentWeekOffset > 1 && `${currentWeekOffset} weeks ahead`}
+              </div>
             </div>
             <button
               onClick={() => setCurrentWeekOffset(currentWeekOffset + 1)}
@@ -310,12 +288,54 @@ export default function AvailabilityCalendar() {
             </button>
           </div>
         </div>
+
+        <div className="flex justify-center lg:justify-end">
+          <button
+            onClick={exportAsJPEG}
+            disabled={selectedSlots.length === 0}
+            className="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+          >
+            Export as JPEG
+          </button>
+        </div>
+      </div>
+
+      <div 
+        ref={calendarRef}
+        className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-4 border border-white/20"
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+      >
+        <div className="mb-6 relative">
+          <div className="text-center">
+            <h2 className="text-xl font-bold bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent">
+              Availability for {TIMEZONE_OPTIONS.find(tz => tz.value === targetTimezone)?.label || targetTimezone}
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">
+              {format(weekDays[0], 'MMM d')} - {format(weekDays[6], 'MMM d, yyyy')}
+              {currentWeekOffset === 0 && ' (This Week)'}
+              {currentWeekOffset === 1 && ' (Next Week)'}
+              {currentWeekOffset > 1 && ` (${currentWeekOffset} weeks ahead)`}
+            </p>
+          </div>
+          {selectedSlots.length > 0 && (
+            <button
+              onClick={() => setSelectedSlots([])}
+              className="absolute top-0 right-0 flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              Clear
+            </button>
+          )}
+        </div>
         <div className={`grid gap-1 bg-gradient-to-br from-gray-200 to-gray-300 rounded-xl overflow-hidden p-2 shadow-inner ${
           isExporting ? 'grid-cols-7' : 'grid-cols-8'
         }`}>
           {!isExporting && (
-            <div className="bg-gradient-to-b from-blue-600 to-blue-700 p-3 font-bold text-white text-center rounded-lg shadow-lg">
-              Your time
+            <div className="bg-gradient-to-b from-blue-600 text-sm to-blue-700 p-3 font-bold text-white text-center rounded-lg shadow-lg">
+              Your time: {userTimezone}
             </div>
           )}
           {weekDays.map((day, dayIndex) => (
@@ -332,14 +352,37 @@ export default function AvailabilityCalendar() {
           {HOURS.map(hour => (
             <div key={hour} className="contents">
               {!isExporting && (
-                <div className="bg-gradient-to-b from-gray-50 to-gray-100 p-3 text-center text-sm font-bold text-gray-900 flex items-center justify-center relative border border-gray-300 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                {is24HourFormat 
-                  ? `${hour.toString().padStart(2, '0')}:00`
-                  : hour === 0 ? '12:00 AM' : hour < 12 ? `${hour}:00 AM` : hour === 12 ? '12:00 PM' : `${hour - 12}:00 PM`
-                }
-                  {!isExporting && new Date().getHours() === hour && (
-                    <div className="absolute left-0 top-0 bottom-0 w-2 bg-blue-600 rounded-r"></div>
-                  )}
+                <div className={`border border-gray-200 p-0 grid gap-px rounded-lg shadow-md overflow-hidden ${
+                  intervalType === '15min' ? 'grid-rows-4' : intervalType === '30min' ? 'grid-rows-2' : 'grid-rows-1'
+                }`}>
+                  {MINUTES.map(minute => {
+                    const currentHour = new Date().getHours()
+                    const currentMinuteQuarter = Math.floor(new Date().getMinutes() / 15) * 15
+                    const isCurrentTime = currentHour === hour && currentMinuteQuarter === minute
+                    
+                    return (
+                      <div
+                        key={`time-${hour}-${minute}`}
+                        className={`bg-gradient-to-r from-blue-100 to-blue-200 p-2 text-center text-sm font-bold text-blue-900 flex items-center justify-center relative border-b border-blue-200 last:border-b-0 min-h-[36px] ${
+                          isCurrentTime ? 'ring-2 ring-blue-400 ring-inset bg-gradient-to-r from-blue-200 to-blue-300' : ''
+                        }`}
+                      >
+                        {is24HourFormat 
+                          ? `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+                          : hour === 0 
+                            ? `12:${minute.toString().padStart(2, '0')} AM`
+                            : hour < 12 
+                              ? `${hour}:${minute.toString().padStart(2, '0')} AM`
+                              : hour === 12 
+                                ? `12:${minute.toString().padStart(2, '0')} PM`
+                                : `${hour - 12}:${minute.toString().padStart(2, '0')} PM`
+                        }
+                        {!isExporting && isCurrentTime && (
+                          <div className="absolute left-0 top-0 bottom-0 w-2 bg-blue-600 rounded-r"></div>
+                        )}
+                      </div>
+                    )
+                  })}
                 </div>
               )}
               {weekDays.map((day, dayIndex) => (
